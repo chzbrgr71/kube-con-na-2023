@@ -139,4 +139,5 @@ __pycache__/
 **/.vscode
 
 # other
-./local-files
+local-files
+local-files/*
