@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: order-service-internal-gateway
+  namespace: pets  
+spec:
+  selector:
+    istio: aks-istio-ingressgateway-internal
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: order-service-vs-internal
+  namespace: pets  
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - order-service-internal-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    - uri:
+        exact: /health
+    - uri:
+        exact: /hugs
+    route:
+    - destination:
+        host: order-service
+        port:
+          number: 3000
