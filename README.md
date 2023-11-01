@@ -11,4 +11,6 @@ Even if you’re new to Kubernetes, you’re probably feeling a little FOMO when
 
 Link to session: https://sched.co/1R2oi 
 
+### Demo app
 
+https://github.com/Azure-Samples/aks-store-demo

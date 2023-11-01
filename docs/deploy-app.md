@@ -9,8 +9,8 @@ kubectl create ns pets
 kubectl label namespace pets istio.io/rev=asm-1-17
 kubectl get namespace -L istio.io/rev
 
-kubectl apply -f https://raw.githubusercontent.com/Azure-Samples/aks-store-demo/main/aks-store-all-in-one.yaml -n pets
-kubectl apply -f ../aks-store-demo/ai-service.yaml -n pets
+kubectl apply -f ./local-files/aks-store-all-in-one.yaml -n pets
+kubectl get pod -n pets
 ```
 
 #### Configure Ingress
@@ -29,6 +29,9 @@ echo "http://$GATEWAY_URL_EXTERNAL"
 
 http://petstore.brianredmond.io/
 http://petstore-admin.brianredmond.io/
+
+kubectl delete -f ./manifests/ingress-store-front.yaml
+kubectl delete -f ./manifests/ingress-store-admin.yaml
 
 # internal
 kubectl apply -f ./manifests/ingress-internal-order-service.yaml
@@ -50,10 +53,25 @@ while true; do curl -s -w "\n" $APP_URL; sleep 1; done
 #### Uninstall application
 
 ```bash
-kubectl delete -f https://raw.githubusercontent.com/Azure-Samples/aks-store-demo/main/aks-store-all-in-one.yaml -n pets
-kubectl delete -f ../aks-store-demo/ai-service.yaml -n pets
+kubectl delete -f .. -n pets
 ```
 
+#### New Release
+
+```bash
+gh auth login --scopes repo,workflow,write:packages
+
+gh repo fork https://github.com/azure-samples/aks-store-demo.git --clone
+
+cd aks-store-demo
+
+gh repo set-default
+
+gh release create 3.0.0 --generate-notes
+
+gh run watch
+
+```
 
 
 
