@@ -18,9 +18,9 @@ az grafana create --name $GRAFANANAME --resource-group $RG_MONITORING
 #### AKS w/ Istio Add-on
 
 ```bash
-export RG=service-mesh
+export RG=mesh-demos-aksaddon
 export RG_MONITORING=monitoring
-export LOCATION=eastus
+export LOCATION=centralus
 export CLUSTERNAME=aks-mesh-demo
 export K8SVERSION=1.27.1
 export NODECOUNT=5
@@ -76,9 +76,9 @@ kubectl get svc -n aks-istio-ingress
 #### AKS Basic Install
 
 ```bash
-export RG=istio-testing
-export LOCATION=eastus
-export CLUSTERNAME=aks-istio-demo
+export RG=mesh-demos-01
+export LOCATION=centralus
+export CLUSTERNAME=aks-linkerd-demo
 export K8SVERSION=1.27
 export NODECOUNT=5
 export VMSIZE=Standard_DS3_v2

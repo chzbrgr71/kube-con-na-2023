@@ -10,4 +10,4 @@ spec:
   - route:
     - destination:
         host: order-service
-        subset: v2
+        subset: v1

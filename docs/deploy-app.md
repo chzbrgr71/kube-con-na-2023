@@ -13,7 +13,7 @@ kubectl apply -f ./local-files/aks-store-all-in-one.yaml -n pets
 kubectl get pod -n pets
 ```
 
-#### Configure Ingress
+#### Configure Application Ingress
 
 https://learn.microsoft.com/en-us/azure/aks/istio-deploy-ingress
 
@@ -67,7 +67,7 @@ cd aks-store-demo
 
 gh repo set-default
 
-gh release create 3.0.0 --generate-notes
+gh release create 1.0.0 --generate-notes
 
 gh run watch
 

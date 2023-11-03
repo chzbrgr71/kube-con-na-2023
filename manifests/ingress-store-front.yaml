@@ -12,7 +12,7 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - "petstore.brianredmond.io"
+    - "pets.brianredmond.io"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -21,7 +21,7 @@ metadata:
   namespace: pets  
 spec:
   hosts:
-  - "petstore.brianredmond.io"
+  - "pets.brianredmond.io"
   gateways:
   - store-front-gateway-external
   http:
