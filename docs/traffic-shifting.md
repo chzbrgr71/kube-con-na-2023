@@ -8,9 +8,10 @@ Book Info destination rules: https://raw.githubusercontent.com/istio/istio/relea
 #### Initial setup
 
 ```bash
-kubectl apply -f ./local-files/order-service-new.yaml -n pets
+kubectl apply -f ./manifests/order-service-new.yaml -n pets
 
 kubectl run testing-pod --image=nginx -n pets
+
 kubectl exec -it testing-pod -n pets -- bash
 export APP_URL=http://order-service.pets:3000/health
 while true; do curl -s -w "\n" $APP_URL; sleep 1; done

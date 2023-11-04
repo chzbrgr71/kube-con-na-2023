@@ -10,6 +10,7 @@ kubectl label namespace pets istio.io/rev=asm-1-17
 kubectl get namespace -L istio.io/rev
 
 kubectl apply -f ./local-files/aks-store-all-in-one.yaml -n pets
+kubectl apply -f ./manifests/order-service-new.yaml -n pets
 kubectl get pod -n pets
 ```
 

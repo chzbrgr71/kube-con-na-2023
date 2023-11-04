@@ -11,8 +11,8 @@ spec:
     - destination:
         host: order-service
         subset: v1
-      weight: 80
+      weight: 70
     - destination:
         host: order-service
         subset: v2
-      weight: 20
+      weight: 30

@@ -3,9 +3,10 @@
 #### Demo List
 
 * Automatic proxy injection​
-* Observability – Grafana dashboard views​
 * Ingress Gateway
+* Observability – Grafana dashboard views​
 * Dynamic traffic routing​
+
 * Canary deployments with Flagger
 
 https://docs.flagger.app/install/flagger-install-on-kubernetes
@@ -14,7 +15,11 @@ https://istio.io/latest/docs/ops/integrations/prometheus
 
 #### Automatic proxy injection​
 
-0. Start with an empty cluster with Istio Add-on installed [service-mesh-01]
+0. Start with an empty cluster [service-mesh-01]
+    * Istio Add-on 
+    * Prometheus/Grafana
+    * No ingress gateways
+
 1. Show Istio control plane
     ```bash
     kubectl get pod -n aks-istio-system
@@ -51,6 +56,8 @@ https://istio.io/latest/docs/ops/integrations/prometheus
     * Prometheus/Grafana setup
     * Istio Gateways installed
     * Pre-deploy store app with both order-service versions
+    * No ingress setup for store-front
+    * Testing pod running
 
 1. Show ingress gateway pods in `aks-istio-ingress` namespace
     ```bash
@@ -62,7 +69,7 @@ https://istio.io/latest/docs/ops/integrations/prometheus
     export INGRESS_HOST_EXTERNAL=$(kubectl -n aks-istio-ingress get service aks-istio-ingressgateway-external -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     export INGRESS_PORT_EXTERNAL=$(kubectl -n aks-istio-ingress get service aks-istio-ingressgateway-external -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
     export GATEWAY_URL_EXTERNAL=$INGRESS_HOST_EXTERNAL:$INGRESS_PORT_EXTERNAL
-    echo "http://$GATEWAY_URL_EXTERNAL"
+    echo $INGRESS_HOST_EXTERNAL
     ```
 
 3. Show DNS
@@ -79,37 +86,61 @@ https://istio.io/latest/docs/ops/integrations/prometheus
     ```
 
 6. Show web app
-    * http://petstore.brianredmond.io/
+    * http://pets.brianredmond.io/
 
 #### Observability – Grafana dashboard views​
 
 0. Start with same cluster as previous demo [service-mesh-02]
     * Run a load test on the application (night before)
-    kubectl scale --replicas=5 deployment.apps/virtual-customer -n pets
+    * `kubectl scale --replicas=5 deployment.apps/virtual-customer -n pets`
 
 1. Show docs and explain. https://istio.io/latest/docs/ops/integrations/prometheus 
 
 2. Show Grafana dashboard views
-    * 
 
 3. Show results of Load Test
 
 #### Dynamic traffic routing​
 
 0. Start with same cluster as gateway demo [service-mesh-02]
-1. Show the order-service deployments (both versions)
+1. Show the order-service deployments (both versions) & configs
 2. Show traffic is split randomly
     ```bash
-    # loop
+    kubectl run testing-pod --image=nginx -n pets
+    kubectl exec -it testing-pod -n pets -- bash
 
+    export APP_URL=http://order-service.pets:3000/health
+    while true; do curl -s -w "\n" $APP_URL; sleep 1; done
     ```
 
-3. Deploy Istio virtual service, rules (all v2)
+3. Deploy Istio virtual service, rules (all v1)
+    ```bash
+    kubectl apply -f ./manifests/order-svc-destination-rule.yaml
+    kubectl apply -f ./manifests/order-svc-all-v1.yaml
+    ```
+
 4. Shift traffic to v3 canary version
+    ```bash
+    # set to 75/25
+    kubectl apply -f ./manifests/order-svc-split.yaml
+
+    # reverse the ratio
+    kubectl apply -f ./manifests/order-svc-split.yaml
+    ```
+
+    ```bash
+    # remove rules
+    kubectl delete -f ./manifests/order-svc-destination-rule.yaml
+    kubectl delete -f ./manifests/order-svc-split.yaml
+    ```
+
 
 #### Flagger (maybe)
 
-0. Use cluster with OSS Istio installed [service-mesh-03]
-    * Pre-deploy Prometheus/Grafana in cluster
-    * Deploy app 
+0. Basic AKS cluster with no add-ons [service-mesh-03]
+    * Install OSS Istio (istioctl)
+    * Deploy Prometheus https://istio.io/latest/docs/ops/integrations/prometheus 
+    * Depoy Grafana https://istio.io/latest/docs/ops/integrations/grafana
+    * Deploy app and v2 order-service
     * Setup Flagger
+
